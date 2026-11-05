@@ -1,95 +1,391 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Atomic Habits System Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atomic Habits - System Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            tactical: {
+              900: '#090d16',
+              800: '#121824',
+              700: '#1e293d',
+              600: '#334155',
+              border: '#1f293d',
+              accentGreen: '#10B981',
+              accentBlue: '#3B82F6',
+              accentAmber: '#F59E0B',
+              accentRed: '#EF4444'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; }
-    .input-dark { background-color: #0d1117; border: 1px solid #30363d; color: #f0f6fc; }
-    .input-dark:focus { border-color: #58a6ff; outline: none; }
+    body {
+      background-color: #090d16;
+      color: #F1F5F9;
+      font-family: 'Inter', sans-serif;
+    }
+    .glass-card {
+      background: rgba(18, 24, 36, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293d;
+      border-radius: 3px;
+    }
+    input[type="checkbox"] {
+      accent-color: #10B981;
+      width: 1.15rem;
+      height: 1.15rem;
+      cursor: pointer;
+    }
   </style>
 </head>
-<body class="p-4 md:p-8 max-w-4xl mx-auto">
-  <header class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-    <div>
-      <h1 class="text-2xl font-bold text-white">Atomic Habits System Tracker</h1>
-      <p class="text-sm text-gray-400">Chapters 1 & 2: Systems over Goals • Identity-Based Execution</p>
-    </div>
-    <div class="card p-3 px-5 text-center">
-      <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Today's Adherence</div>
-      <div id="adherenceScore" class="text-3xl font-extrabold text-blue-400">0%</div>
+<body class="min-h-screen custom-scrollbar flex flex-col pb-12">
+  <!-- Header -->
+  <header class="border-b border-tactical-border bg-tactical-900/90 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-emerald-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-900/30">
+          ⚡
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            SYSTEM ARCHITECTURE <span class="text-xs px-2 py-0.5 rounded bg-tactical-800 text-emerald-400 border border-emerald-500/30">Ch. 1 & 2 Protocols</span>
+          </h1>
+          <p class="text-xs text-gray-400">Identity-Based Tracking & Operational Score</p>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Header Cards -->
+      <div class="flex items-center gap-3">
+        <div class="bg-tactical-800 border border-tactical-border px-4 py-2 rounded-xl text-center min-w-[110px]">
+          <div class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Today</div>
+          <div id="todayScoreHeader" class="text-xl font-extrabold text-blue-400">0%</div>
+        </div>
+        <div class="bg-tactical-800 border border-tactical-border px-4 py-2 rounded-xl text-center min-w-[110px]">
+          <div class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">7-Day Avg</div>
+          <div id="weeklyAvgHeader" class="text-xl font-extrabold text-emerald-400">0%</div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <main id="protocolList" class="space-y-4"></main>
+  <!-- Main Content Container -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 flex-grow w-full space-y-6">
 
-  <footer class="mt-8 pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
-    Identity-Based Daily Execution Architecture
+    <!-- TOP SECTION: 7-DAY SYSTEM HISTORY & ANALYTICS -->
+    <section class="glass-card rounded-2xl p-6 relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h2 class="text-base font-bold text-white tracking-wide flex items-center gap-2">
+            <i class="fa-solid fa-chart-column text-blue-400"></i> 7-Day Performance Analytics
+          </h2>
+          <p class="text-xs text-gray-400 mt-0.5">Target: Maintain <span class="text-emerald-400 font-semibold">≥ 85%</span> overall process adherence across all protocols.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="targetBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            Target: ≥ 85%
+          </span>
+        </div>
+      </div>
+
+      <!-- Bar Chart Visualization -->
+      <div class="bg-tactical-900/60 rounded-xl p-4 border border-tactical-border/60">
+        <div id="historyBars" class="grid grid-cols-7 gap-3 sm:gap-6 items-end h-36 pt-4 border-b border-tactical-border/60 pb-2">
+          <!-- Dynamically Rendered -->
+        </div>
+        <div id="historyDates" class="grid grid-cols-7 gap-3 sm:gap-6 text-center text-xs font-semibold text-gray-400 mt-2">
+          <!-- Dynamically Rendered -->
+        </div>
+      </div>
+
+      <!-- Historical Key Metrics Row -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-2">
+        <div class="bg-tactical-800/60 rounded-xl p-3 border border-tactical-border/40 text-center">
+          <span class="text-[10px] text-gray-400 uppercase font-semibold">Today's Score</span>
+          <div id="todayScoreDetail" class="text-lg font-bold text-white mt-0.5">0%</div>
+        </div>
+        <div class="bg-tactical-800/60 rounded-xl p-3 border border-tactical-border/40 text-center">
+          <span class="text-[10px] text-gray-400 uppercase font-semibold">7-Day Average</span>
+          <div id="weeklyAvgDetail" class="text-lg font-bold text-emerald-400 mt-0.5">0%</div>
+        </div>
+        <div class="bg-tactical-800/60 rounded-xl p-3 border border-tactical-border/40 text-center">
+          <span class="text-[10px] text-gray-400 uppercase font-semibold">Target Met Days</span>
+          <div id="targetDaysCount" class="text-lg font-bold text-blue-400 mt-0.5">0 / 7</div>
+        </div>
+        <div class="bg-tactical-800/60 rounded-xl p-3 border border-tactical-border/40 text-center">
+          <span class="text-[10px] text-gray-400 uppercase font-semibold">Current Streak</span>
+          <div id="streakCount" class="text-lg font-bold text-amber-400 mt-0.5">0 Days</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IDENTITY REINFORCEMENT BANNER -->
+    <div class="glass-card rounded-2xl p-4 border-l-4 border-l-emerald-500 flex items-start gap-3">
+      <i class="fa-solid fa-quote-left text-emerald-400 text-lg mt-0.5"></i>
+      <div>
+        <p class="text-xs text-gray-300 italic">
+          "You do not rise to the level of your goals. You fall to the level of your systems." <span class="text-gray-500 font-normal">— James Clear (Atomic Habits)</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- MAIN PROTOCOLS LIST -->
+    <section>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-base font-bold text-white tracking-wide flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-emerald-400"></i> Daily System Protocols
+        </h2>
+        <span class="text-xs text-gray-400">Complete items as you execute throughout the day</span>
+      </div>
+
+      <div id="protocolList" class="space-y-4">
+        <!-- Rendered Dynamically -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="max-w-5xl mx-auto px-4 mt-8 pt-4 border-t border-tactical-border text-center text-xs text-gray-500">
+    Atomic Habits System Tracker • Identity-Based Daily Protocol Execution
   </footer>
 
   <script>
     const PROTOCOLS = [
-      { id: 'weight', title: '1. Weight Loss & Fitness', identity: 'I am a disciplined athlete who manages energy and recovery with precision.', inputs: [{ id: 'weight_lbs', label: 'Weigh-in (lbs)', type: 'number' }, { id: 'food_tracked', label: 'Pre-logged all meals', type: 'checkbox' }, { id: 'workout_done', label: 'Executed workout block', type: 'checkbox' }] },
-      { id: 'nicotine', title: '2. Quit Nicotine', identity: 'I am a clean-living operator whose mental focus comes from breath and discipline.', inputs: [{ id: 'pouch_count', label: 'Today\'s Pouch Count', type: 'number' }, { id: 'delay_protocol', label: 'Triggered 10-min delay protocol on cravings', type: 'checkbox' }] },
-      { id: 'anduril', title: '3. Deployment Lead Mastery (Anduril)', identity: 'I am a master field engineer and tactical systems expert.', inputs: [{ id: 'study_done', label: 'Completed 30-min deep study block', type: 'checkbox' }, { id: 'study_topic', label: 'Focus Area', type: 'select', options: ['System Architecture', 'Tactical Employment', 'Setup & Teardown', 'Troubleshooting'] }, { id: 'friday_test', label: 'Friday Output (Taught item / Wrote SOP)', type: 'checkbox' }] },
-      { id: 'spanish', title: '4. Spanish Fluency', identity: 'I am a multi-lingual communicator who builds competence daily.', inputs: [{ id: 'spanish_done', label: 'Completed 1 lesson before 09:00', type: 'checkbox' }] },
-      { id: 'lyra', title: '5. Mental Performance (Lyra Tools)', identity: 'I am a calm, clear-headed operator who actively conditions my mind.', inputs: [{ id: 'morning_prompt', label: 'Set morning reframing cue', type: 'checkbox' }, { id: 'par_log', label: 'Logged Post-Action Review (PAR)', type: 'checkbox' }] },
-      { id: 'screen', title: '6. Media & Screen Control', identity: 'I am present in my real-world environment and protect my cognitive focus.', inputs: [{ id: 'no_work_tv', label: 'Zero non-work phone TV/streaming during work hours', type: 'checkbox' }] }
+      {
+        id: 'weight',
+        title: '1. Weight Loss & Fitness Architecture',
+        identity: 'I am a disciplined athlete who manages energy and recovery with precision.',
+        icon: 'fa-dumbbell',
+        accentColor: 'emerald',
+        inputs: [
+          { id: 'weight_lbs', label: 'Morning Weight (lbs)', type: 'number', placeholder: 'e.g. 238.5' },
+          { id: 'food_tracked', label: 'Pre-logged all meals before eating', type: 'checkbox' },
+          { id: 'workout_done', label: 'Executed scheduled workout block without modifying intensity on the fly', type: 'checkbox' }
+        ]
+      },
+      {
+        id: 'nicotine',
+        title: '2. Quit Nicotine (Linear Taper)',
+        identity: 'I am a clean-living operator whose mental focus comes from breath and discipline.',
+        icon: 'fa-ban-smoking',
+        accentColor: 'blue',
+        inputs: [
+          { id: 'pouch_count', label: 'Today\'s Pouch Count', type: 'number', placeholder: 'Pouch count' },
+          { id: 'pouch_alloc', label: 'Counted out allowable daily pouches into EDC container at 0700', type: 'checkbox' },
+          { id: 'delay_protocol', label: 'Triggered 10-min delay + 8oz water + 5 box breaths on cravings', type: 'checkbox' }
+        ]
+      },
+      {
+        id: 'anduril',
+        title: '3. Deployment Lead Mastery (Anduril)',
+        identity: 'I am a master field engineer and tactical systems expert.',
+        icon: 'fa-shield-halved',
+        accentColor: 'amber',
+        inputs: [
+          { id: 'study_done', label: 'Completed 30-min deep study block (0730–0800) before email/Slack', type: 'checkbox' },
+          { id: 'study_topic', label: 'Today\'s Study Focus Domain', type: 'select', options: ['System Architecture & Requirements', 'Tactical Employment & Doctrine', 'Setup, Teardown & Maintenance', 'Troubleshooting & Fault Isolation'] },
+          { id: 'friday_test', label: 'Friday Output: Documented/Taught 1-page operational guide or failure fix', type: 'checkbox' }
+        ]
+      },
+      {
+        id: 'spanish',
+        title: '4. Spanish Language Fluency',
+        identity: 'I am a multi-lingual communicator who builds competence through daily consistency.',
+        icon: 'fa-language',
+        accentColor: 'emerald',
+        inputs: [
+          { id: 'spanish_done', label: 'Completed 1 lesson before 09:00 (Habit Stack: After Morning Coffee)', type: 'checkbox' }
+        ]
+      },
+      {
+        id: 'lyra',
+        title: '5. Mental Performance (Lyra Tools)',
+        identity: 'I am a calm, clear-headed operator who actively conditions my mind like a muscle.',
+        icon: 'fa-brain',
+        accentColor: 'amber',
+        inputs: [
+          { id: 'morning_prompt', label: 'Morning: Set 1 cognitive reframing prompt/self-talk cue', type: 'checkbox' },
+          { id: 'par_log', label: 'Evening: Completed Post-Action Review (PAR) note entry', type: 'checkbox' },
+          { id: 'par_note', label: 'PAR Notes (Optional reflection)', type: 'textarea', placeholder: 'Log stress trigger, internal dialogue, and performance tool applied...' }
+        ]
+      },
+      {
+        id: 'screen',
+        title: '6. Media & Screen Control',
+        identity: 'I am present in my real-world environment and protect my cognitive focus.',
+        icon: 'fa-mobile-screen-button',
+        accentColor: 'emerald',
+        inputs: [
+          { id: 'no_work_tv', label: 'Zero non-work phone TV/streaming during work hours (0800–1700)', type: 'checkbox' },
+          { id: 'phone_out_of_reach', label: 'Phone kept out of reach/in drawer during focused work blocks', type: 'checkbox' }
+        ]
+      }
     ];
 
-    let state = JSON.parse(localStorage.getItem('atomic_habits_state') || '{}');
+    const TODAY_KEY = new Date().toISOString().split('T')[0];
+    let store = JSON.parse(localStorage.getItem('atomic_habits_history') || '{}');
+    if (!store[TODAY_KEY]) store[TODAY_KEY] = {};
 
     function render() {
       const container = document.getElementById('protocolList');
       container.innerHTML = '';
       let totalChecked = 0, totalItems = 0;
+      const todayData = store[TODAY_KEY] || {};
 
       PROTOCOLS.forEach(p => {
         const card = document.createElement('div');
-        card.className = 'card p-4';
+        card.className = 'glass-card rounded-2xl p-5 border border-tactical-border/60 hover:border-tactical-border transition-all';
         let inputsHTML = '';
 
         p.inputs.forEach(i => {
           totalItems++;
-          const val = state[i.id] || '';
+          const val = todayData[i.id] !== undefined ? todayData[i.id] : '';
+          
           if (i.type === 'checkbox') {
             if (val === true) totalChecked++;
-            inputsHTML += `<label class="flex items-center gap-2 mt-2 cursor-pointer text-sm text-gray-200">
-              <input type="checkbox" onchange="update('${i.id}', this.checked)" ${val ? 'checked' : ''} class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0"> ${i.label}
-            </label>`;
+            inputsHTML += `
+              <label class="flex items-start gap-3 p-2.5 rounded-xl bg-tactical-800/50 border border-tactical-border/40 hover:bg-tactical-800 cursor-pointer transition-all">
+                <input type="checkbox" onchange="update('${i.id}', this.checked)" ${val ? 'checked' : ''} class="mt-0.5 rounded border-gray-600 focus:ring-0">
+                <span class="text-xs text-gray-200 leading-relaxed ${val ? 'line-through text-gray-400' : ''}">${i.label}</span>
+              </label>
+            `;
           } else if (i.type === 'number') {
-            if (val !== '') totalChecked++;
-            inputsHTML += `<div class="mt-2"><label class="block text-xs text-gray-400 mb-1">${i.label}</label>
-              <input type="number" step="any" value="${val}" onchange="update('${i.id}', this.value)" class="input-dark text-sm rounded px-3 py-1.5 w-full"></div>`;
+            if (val !== '' && val !== null) totalChecked++;
+            inputsHTML += `
+              <div class="mt-1">
+                <label class="block text-xs font-semibold text-gray-400 mb-1">${i.label}</label>
+                <input type="number" step="any" value="${val}" placeholder="${i.placeholder || ''}" onchange="update('${i.id}', this.value)" class="w-full bg-tactical-800 border border-tactical-border rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors">
+              </div>
+            `;
           } else if (i.type === 'select') {
-            inputsHTML += `<div class="mt-2"><label class="block text-xs text-gray-400 mb-1">${i.label}</label>
-              <select onchange="update('${i.id}', this.value)" class="input-dark text-sm rounded px-3 py-1.5 w-full">
-                ${i.options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
-              </select></div>`;
+            inputsHTML += `
+              <div class="mt-1">
+                <label class="block text-xs font-semibold text-gray-400 mb-1">${i.label}</label>
+                <select onchange="update('${i.id}', this.value)" class="w-full bg-tactical-800 border border-tactical-border rounded-lg p-2 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
+                  ${i.options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+                </select>
+              </div>
+            `;
+          } else if (i.type === 'textarea') {
+            inputsHTML += `
+              <div class="mt-1">
+                <label class="block text-xs font-semibold text-gray-400 mb-1">${i.label}</label>
+                <textarea rows="2" placeholder="${i.placeholder || ''}" onchange="update('${i.id}', this.value)" class="w-full bg-tactical-800 border border-tactical-border rounded-lg p-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors">${val}</textarea>
+              </div>
+            `;
           }
         });
 
-        card.innerHTML = `<h2 class="font-bold text-white text-lg">${p.title}</h2>
-          <p class="text-xs text-blue-400 mb-3 font-medium">Identity: "${p.identity}"</p>
-          ${inputsHTML}`;
+        card.innerHTML = `
+          <div class="flex items-center gap-3 border-b border-tactical-border/50 pb-3 mb-3">
+            <div class="w-8 h-8 rounded-lg bg-tactical-800 border border-tactical-border flex items-center justify-center text-${p.accentColor}-400">
+              <i class="fa-solid ${p.icon}"></i>
+            </div>
+            <h3 class="text-base font-bold text-white tracking-wide">${p.title}</h3>
+          </div>
+          <div class="bg-tactical-900/60 rounded-xl p-2.5 mb-3 border border-tactical-border/40 flex items-start gap-2">
+            <i class="fa-solid fa-fingerprint text-emerald-400 mt-0.5 text-xs"></i>
+            <div>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Identity Anchor</span>
+              <p class="text-xs text-emerald-300 font-medium">${p.identity}</p>
+            </div>
+          </div>
+          <div class="space-y-2">
+            ${inputsHTML}
+          </div>
+        `;
         container.appendChild(card);
       });
 
-      const score = Math.round((totalChecked / totalItems) * 100);
-      document.getElementById('adherenceScore').innerText = `${score}%`;
+      const todayScore = totalItems > 0 ? Math.round((totalChecked / totalItems) * 100) : 0;
+      document.getElementById('todayScoreHeader').innerText = `${todayScore}%`;
+      document.getElementById('todayScoreDetail').innerText = `${todayScore}%`;
+      store[TODAY_KEY]._score = todayScore;
+
+      renderHistory();
     }
 
     function update(key, value) {
-      state[key] = value;
-      localStorage.setItem('atomic_habits_state', JSON.stringify(state));
+      store[TODAY_KEY][key] = value;
+      localStorage.setItem('atomic_habits_history', JSON.stringify(store));
       render();
+    }
+
+    function renderHistory() {
+      const barsContainer = document.getElementById('historyBars');
+      const datesContainer = document.getElementById('historyDates');
+      barsContainer.innerHTML = '';
+      datesContainer.innerHTML = '';
+
+      let total7DayScore = 0;
+      let targetMetDays = 0;
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        const dayLabel = i === 0 ? 'Today' : d.toLocaleDateString('en-US', { weekday: 'short' });
+        
+        const dayScore = store[dateStr] ? (store[dateStr]._score || 0) : 0;
+        total7DayScore += dayScore;
+        if (dayScore >= 85) targetMetDays++;
+
+        const barHeight = dayScore > 0 ? `${dayScore}%` : '6px';
+        const colorClass = dayScore >= 85 ? 'bg-emerald-500' : (dayScore >= 60 ? 'bg-amber-500' : (dayScore > 0 ? 'bg-blue-500' : 'bg-gray-700'));
+
+        barsContainer.innerHTML += `
+          <div class="h-full flex flex-col justify-end items-center group relative">
+            <span class="text-[10px] text-gray-300 font-bold mb-1 opacity-90">${dayScore}%</span>
+            <div class="w-full ${colorClass} rounded-t transition-all duration-500" style="height: ${barHeight}"></div>
+          </div>`;
+
+        datesContainer.innerHTML += `<div>${dayLabel}</div>`;
+      }
+
+      const avgScore = Math.round(total7DayScore / 7);
+      document.getElementById('weeklyAvgHeader').innerText = `${avgScore}%`;
+      document.getElementById('weeklyAvgDetail').innerText = `${avgScore}%`;
+      document.getElementById('targetDaysCount').innerText = `${targetMetDays} / 7`;
+      document.getElementById('streakCount').innerText = `${calculateStreak()} Days`;
+    }
+
+    function calculateStreak() {
+      let streak = 0;
+      let d = new Date();
+      while (true) {
+        const dateStr = d.toISOString().split('T')[0];
+        const dayScore = store[dateStr] ? (store[dateStr]._score || 0) : 0;
+        if (dayScore >= 85) {
+          streak++;
+          d.setDate(d.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      return streak;
     }
 
     render();
   </script>
 </body>
 </html>
- 
