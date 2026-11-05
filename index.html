@@ -1,1 +1,94 @@
-html://sites.google.com/u/0/d/1mIbMUCgN27sq5_wgP3ARDB1ponzKTSkT/preview
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atomic Habits System Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; }
+    .input-dark { background-color: #0d1117; border: 1px solid #30363d; color: #f0f6fc; }
+    .input-dark:focus { border-color: #58a6ff; outline: none; }
+  </style>
+</head>
+<body class="p-4 md:p-8 max-w-4xl mx-auto">
+  <header class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-white">Atomic Habits System Tracker</h1>
+      <p class="text-sm text-gray-400">Chapters 1 & 2: Systems over Goals • Identity-Based Execution</p>
+    </div>
+    <div class="card p-3 px-5 text-center">
+      <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Today's Adherence</div>
+      <div id="adherenceScore" class="text-3xl font-extrabold text-blue-400">0%</div>
+    </div>
+  </header>
+
+  <main id="protocolList" class="space-y-4"></main>
+
+  <footer class="mt-8 pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
+    Identity-Based Daily Execution Architecture
+  </footer>
+
+  <script>
+    const PROTOCOLS = [
+      { id: 'weight', title: '1. Weight Loss & Fitness', identity: 'I am a disciplined athlete who manages energy and recovery with precision.', inputs: [{ id: 'weight_lbs', label: 'Weigh-in (lbs)', type: 'number' }, { id: 'food_tracked', label: 'Pre-logged all meals', type: 'checkbox' }, { id: 'workout_done', label: 'Executed workout block', type: 'checkbox' }] },
+      { id: 'nicotine', title: '2. Quit Nicotine', identity: 'I am a clean-living operator whose mental focus comes from breath and discipline.', inputs: [{ id: 'pouch_count', label: 'Today\'s Pouch Count', type: 'number' }, { id: 'delay_protocol', label: 'Triggered 10-min delay protocol on cravings', type: 'checkbox' }] },
+      { id: 'anduril', title: '3. Deployment Lead Mastery (Anduril)', identity: 'I am a master field engineer and tactical systems expert.', inputs: [{ id: 'study_done', label: 'Completed 30-min deep study block', type: 'checkbox' }, { id: 'study_topic', label: 'Focus Area', type: 'select', options: ['System Architecture', 'Tactical Employment', 'Setup & Teardown', 'Troubleshooting'] }, { id: 'friday_test', label: 'Friday Output (Taught item / Wrote SOP)', type: 'checkbox' }] },
+      { id: 'spanish', title: '4. Spanish Fluency', identity: 'I am a multi-lingual communicator who builds competence daily.', inputs: [{ id: 'spanish_done', label: 'Completed 1 lesson before 09:00', type: 'checkbox' }] },
+      { id: 'lyra', title: '5. Mental Performance (Lyra Tools)', identity: 'I am a calm, clear-headed operator who actively conditions my mind.', inputs: [{ id: 'morning_prompt', label: 'Set morning reframing cue', type: 'checkbox' }, { id: 'par_log', label: 'Logged Post-Action Review (PAR)', type: 'checkbox' }] },
+      { id: 'screen', title: '6. Media & Screen Control', identity: 'I am present in my real-world environment and protect my cognitive focus.', inputs: [{ id: 'no_work_tv', label: 'Zero non-work phone TV/streaming during work hours', type: 'checkbox' }] }
+    ];
+
+    let state = JSON.parse(localStorage.getItem('atomic_habits_state') || '{}');
+
+    function render() {
+      const container = document.getElementById('protocolList');
+      container.innerHTML = '';
+      let totalChecked = 0, totalItems = 0;
+
+      PROTOCOLS.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card p-4';
+        let inputsHTML = '';
+
+        p.inputs.forEach(i => {
+          totalItems++;
+          const val = state[i.id] || '';
+          if (i.type === 'checkbox') {
+            if (val === true) totalChecked++;
+            inputsHTML += `<label class="flex items-center gap-2 mt-2 cursor-pointer text-sm text-gray-200">
+              <input type="checkbox" onchange="update('${i.id}', this.checked)" ${val ? 'checked' : ''} class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-blue-600 focus:ring-0"> ${i.label}
+            </label>`;
+          } else if (i.type === 'number') {
+            if (val !== '') totalChecked++;
+            inputsHTML += `<div class="mt-2"><label class="block text-xs text-gray-400 mb-1">${i.label}</label>
+              <input type="number" step="any" value="${val}" onchange="update('${i.id}', this.value)" class="input-dark text-sm rounded px-3 py-1.5 w-full"></div>`;
+          } else if (i.type === 'select') {
+            inputsHTML += `<div class="mt-2"><label class="block text-xs text-gray-400 mb-1">${i.label}</label>
+              <select onchange="update('${i.id}', this.value)" class="input-dark text-sm rounded px-3 py-1.5 w-full">
+                ${i.options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+              </select></div>`;
+          }
+        });
+
+        card.innerHTML = `<h2 class="font-bold text-white text-lg">${p.title}</h2>
+          <p class="text-xs text-blue-400 mb-3 font-medium">Identity: "${p.identity}"</p>
+          ${inputsHTML}`;
+        container.appendChild(card);
+      });
+
+      const score = Math.round((totalChecked / totalItems) * 100);
+      document.getElementById('adherenceScore').innerText = `${score}%`;
+    }
+
+    function update(key, value) {
+      state[key] = value;
+      localStorage.setItem('atomic_habits_state', JSON.stringify(state));
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
